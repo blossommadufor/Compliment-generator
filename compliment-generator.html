@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Compliment Generator | Spreading Kindness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #FFD166;
+            --accent: #4ECDC4;
+            --text: #2D3436;
+            --glass: rgba(255, 255, 255, 0.9);
+            /* Responsive card sizing */
+            --card-width: min(350px, 90vw);
+            --card-height: min(500px, 70vh);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            /* Use dvh for better mobile viewport handling */
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            font-family: 'Lato', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #FF6B6B, #FFD166, #4ECDC4, #A29BFE, #6C5CE7, #FD79A8);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: relative;
+        }
+
+        .bg-shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(40px);
+            animation: floatShape 20s infinite linear;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--glass);
+            width: var(--card-width);
+            height: var(--card-height);
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 2px solid white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            transition: transform 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .corner-accent {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .top-right { top: 12px; right: 12px; }
+        .bottom-left { bottom: 12px; left: 12px; }
+
+        .display-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .emoji-display {
+            font-size: clamp(3rem, 15vw, 4.5rem);
+            margin-bottom: 15px;
+        }
+
+        #main-content {
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1.2rem, 6vw, 1.6rem);
+            line-height: 1.3;
+            font-weight: 900;
+            color: var(--text);
+            padding: 0 10px;
+        }
+
+        #punchline {
+            margin-top: 15px;
+            font-size: clamp(1rem, 5vw, 1.2rem);
+            color: var(--primary);
+            font-weight: 700;
+            min-height: 1.5em;
+            opacity: 0;
+        }
+
+        .show-punchline {
+            animation: punchlineIn 0.5s ease-out forwards;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            width: var(--card-width);
+        }
+
+        .action-btn {
+            flex: 1;
+            background: white;
+            color: var(--text);
+            border: none;
+            padding: 14px 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes punchlineIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sparkle effect styles */
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 100;
+        }
+
+        @media (max-width: 360px) {
+            .controls { flex-direction: column; }
+            .corner-accent { width: 35px; height: 35px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shape" style="top:5%; left:5%; width:200px; height:200px;"></div>
+    <div class="bg-shape" style="bottom:5%; right:5%; width:250px; height:250px;"></div>
+
+    <main class="app-container">
+        <section class="card" id="card">
+            <div class="corner-accent top-right" id="corner-tr">✨</div>
+            <div class="corner-accent bottom-left" id="corner-bl">✨</div>
+            
+            <div class="display-area">
+                <span id="emoji-icon" class="emoji-display">👋</span>
+                <p id="main-content">Hey Blossom! Pick a card for a vibe check.</p>
+                <p id="punchline"></p>
+            </div>
+        </section>
+
+        <div class="controls">
+            <button id="compliment-btn" class="action-btn" style="border-bottom: 4px solid var(--accent);">
+                <span>🌟</span> Compliment
+            </button>
+            <button id="joke-btn" class="action-btn" style="border-bottom: 4px solid var(--primary);">
+                <span>😂</span> Daily Joke
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const compliments = [
+            { text: "You're a natural at whatever you do!", emoji: "🌟" },
+            { text: "Your creative potential is limitless.", emoji: "🎨" },
+            { text: "The world is better because you're in it.", emoji: "🌍" },
+            { text: "Your positivity is infectious.", emoji: "☀️" },
+            { text: "You’re more fun than bubble wrap.", emoji: "🫧" },
+            { text: "Your smile is proof magic exists.", emoji: "🪄" },
+            { text: "You are the human version of warm cocoa.", emoji: "☕" }
+        ];
+
+        const jokes = [
+            { setup: "Why don't scientists trust atoms?", punchline: "Because they make up everything!" },
+            { setup: "What do you call a fake noodle?", punchline: "An Impasta!" },
+            { setup: "Why was 6 afraid of 7?", punchline: "Because 7, 8, 9!" },
+            { setup: "What do you call a pile of cats?", punchline: "A meow-ntain!" },
+            { setup: "How do you make a tissue dance?", punchline: "Put a little boogey in it!" }
+        ];
+
+        const palette = ["#FF6B6B", "#4ECDC4", "#FFD166", "#6C5CE7", "#FD79A8"];
+        const cornerIcons = ["🍀", "💎", "🃏", "🎯", "⚡", "🌈"];
+
+        const mainContent = document.getElementById('main-content');
+        const punchlineEl = document.getElementById('punchline');
+        const emojiEl = document.getElementById('emoji-icon');
+        const cardEl = document.getElementById('card');
+        const cTr = document.getElementById('corner-tr');
+        const cBl = document.getElementById('corner-bl');
+        
+        let punchlineTimeout;
+
+        function updateStyles() {
+            const color = palette[Math.floor(Math.random() * palette.length)];
+            cTr.style.backgroundColor = color;
+            cTr.textContent = cornerIcons[Math.floor(Math.random() * cornerIcons.length)];
+            cBl.style.backgroundColor = palette[Math.floor(Math.random() * palette.length)];
+            cBl.textContent = cornerIcons[Math.floor(Math.random() * cornerIcons.length)];
+            
+            cardEl.style.transform = 'scale(1.02)';
+            setTimeout(() => cardEl.style.transform = 'scale(1)', 200);
+        }
+
+        function showCompliment(e) {
+            clearTimeout(punchlineTimeout);
+            updateStyles();
+            const item = compliments[Math.floor(Math.random() * compliments.length)];
+            emojiEl.textContent = item.emoji;
+            mainContent.textContent = item.text;
+            punchlineEl.classList.remove('show-punchline');
+            punchlineEl.textContent = "";
+        }
+
+        function showJoke(e) {
+            clearTimeout(punchlineTimeout);
+            updateStyles();
+            const joke = jokes[Math.floor(Math.random() * jokes.length)];
+            emojiEl.textContent = "🤡";
+            mainContent.textContent = joke.setup;
+            punchlineEl.textContent = joke.punchline;
+            punchlineEl.classList.remove('show-punchline');
+            punchlineTimeout = setTimeout(() => punchlineEl.classList.add('show-punchline'), 2000);
+        }
+
+        document.getElementById('compliment-btn').addEventListener('click', showCompliment);
+        document.getElementById('joke-btn').addEventListener('click', showJoke);
+    </script>
+</body>
+</html>
